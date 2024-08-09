@@ -21,7 +21,7 @@ Install poetry and dependencies:
 ```bash
 pipx install poetry && poetry install
 ```
-Run app
+Populate `.env` file with credentials and run the app:
 ```bash
 streamlit run src/chat_sql/app.py
 ```
