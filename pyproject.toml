@@ -7,14 +7,15 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-llamaapi = "^0.1.36"
 langchain = "^0.2.12"
 langchain-openai = "^0.1.20"
-psycopg2-binary = "^2.9.9"
-langchain-community = "^0.2.11"
 streamlit = "^1.37.0"
 python-dotenv = "^1.0.1"
 pytest = "^8.3.2"
+pre-commit = "^3.8.0"
+coverage = "^7.6.1"
+langchain-community = "^0.2.11"
+psycopg2-binary = "^2.9.9"
 
 
 [build-system]

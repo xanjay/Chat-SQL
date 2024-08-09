@@ -1,0 +1,7 @@
+[run]
+source = chat_sql
+
+[report]
+exclude_lines = 
+    pragma: no cover
+
