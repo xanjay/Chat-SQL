@@ -9,6 +9,7 @@ config = dotenv_values(".env")
 OPENAI_API_KEY = config["OPENAI_API_KEY"]
 OPENAI_MODEL = config["OPENAI_MODEL"]
 
+
 def get_model():
     # initialize openai llm
     llm = ChatOpenAI(
@@ -19,11 +20,12 @@ def get_model():
         frequency_penalty=0,
         presence_penalty=0,
         max_retries=2,
-        api_key=OPENAI_API_KEY
+        api_key=OPENAI_API_KEY,
     )
     # add function call
     llm_with_tools = llm.bind_tools([run_sql])
     return llm_with_tools
+
 
 def get_db_schema():
     schema = run_db_query("""
@@ -33,6 +35,7 @@ def get_db_schema():
                   ORDER BY table_name, ordinal_position;""")
     return schema
 
+
 def run_model(user_input, messages, model):
     messages.append(HumanMessage(content=user_input))
     # call model
@@ -40,14 +43,15 @@ def run_model(user_input, messages, model):
     messages.append(ai_msg)
     # make tool calls (if any)
     if len(ai_tool_calls := ai_msg.tool_calls):
-      for tool_call in ai_tool_calls:
-          selected_tool = {"run_sql": run_sql}[tool_call["name"].lower()]
-          tool_output = selected_tool.invoke(tool_call["args"])
-          messages.append(ToolMessage(content=tool_output, tool_call_id=tool_call["id"]))  # noqa: E501
-      ai_msg2 = model.invoke(messages)
-      return [ai_msg, ai_msg2]
+        for tool_call in ai_tool_calls:
+            selected_tool = {"run_sql": run_sql}[tool_call["name"].lower()]
+            tool_output = selected_tool.invoke(tool_call["args"])
+            messages.append(
+                ToolMessage(content=tool_output, tool_call_id=tool_call["id"])
+            )  # noqa: E501
+        ai_msg2 = model.invoke(messages)
+        return [ai_msg, ai_msg2]
     return [ai_msg]
-
 
 
 def initialize_assistant():
@@ -67,13 +71,12 @@ def initialize_assistant():
         {db_schema}
     """
 
-    messages.append(SystemMessage(content=system_message.format(**{"db_schema": get_db_schema()})))  # noqa: E501
+    messages.append(
+        SystemMessage(content=system_message.format(**{"db_schema": get_db_schema()}))
+    )  # noqa: E501
 
     # model init call
     chain = get_model()
     ai_msg = chain.invoke(messages)
     messages.append(ai_msg)
     return chain, messages
-
-
-    

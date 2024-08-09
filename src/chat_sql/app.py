@@ -20,8 +20,9 @@ if prompt := st.chat_input("Ask something"):
 
     with st.chat_message("assistant"):
         if st.session_state.chain:
-            ai_messages = run_model(prompt, st.session_state.messages, 
-                                    st.session_state.chain)
+            ai_messages = run_model(
+                prompt, st.session_state.messages, st.session_state.chain
+            )
             st.markdown(ai_messages[-1].content)
             st.session_state.messages += ai_messages
         else:

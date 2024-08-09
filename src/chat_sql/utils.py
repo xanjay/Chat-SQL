@@ -9,4 +9,6 @@ POSTGRES_PASSWORD = config["POSTGRES_PASSWORD"]
 POSTGRESS_URL = config["POSTGRESS_URL"]
 POSTGRESS_DB = config["POSTGRESS_DB"]
 
-db_conn = SQLDatabase.from_uri(f"""postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRESS_URL}/{POSTGRESS_DB}""")
+db_conn = SQLDatabase.from_uri(
+    f"""postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRESS_URL}/{POSTGRESS_DB}"""
+)
