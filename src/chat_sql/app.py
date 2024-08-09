@@ -1,4 +1,4 @@
-from chat_sql.main import initialize_assistant, run_model
+from main import initialize_assistant, run_model
 from langchain_core.messages import HumanMessage
 import streamlit as st
 
