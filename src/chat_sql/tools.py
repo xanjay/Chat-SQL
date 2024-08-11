@@ -11,9 +11,8 @@ def run_db_query(sql_query):
 # pydantic class to define function schema
 class RunSQLSchema(BaseModel):
     sql_query: str = Field(description="SQL query string")
-    database: str = Field(
-        description="database type. This field is optional. default value: `postgresql`"
-    )  # noqa: E501
+    database: str = Field(description="database type. This field is optional")
+    database = "postgresql"  # default value. This line makes it optional param in the final function JSON as well.
 
 
 """
@@ -23,5 +22,7 @@ RunSQLSchema and docstring of run_sql are used to define function(e.g. openAI js
 
 @tool(args_schema=RunSQLSchema)
 def run_sql(sql_query: str, database: str = "postgresql") -> str:
-    """Run the SQL query over the database and return JSON result"""
+    """
+    Run the SQL query over the database and return JSON result.
+    """
     return str(run_db_query(sql_query=sql_query))

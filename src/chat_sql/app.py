@@ -1,5 +1,4 @@
 from main import initialize_assistant, run_model
-from langchain_core.messages import HumanMessage
 import streamlit as st
 
 
@@ -14,7 +13,6 @@ for message in st.session_state.messages:
             st.markdown(message.content)
 
 if prompt := st.chat_input("Ask something"):
-    st.session_state.messages.append(HumanMessage(content=prompt))
     with st.chat_message("human"):
         st.markdown(prompt)
 
@@ -24,6 +22,6 @@ if prompt := st.chat_input("Ask something"):
                 prompt, st.session_state.messages, st.session_state.chain
             )
             st.markdown(ai_messages[-1].content)
-            st.session_state.messages += ai_messages
+            st.session_state.messages = ai_messages
         else:
             st.error("Assistant not initialized. Please try again later.")

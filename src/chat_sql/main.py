@@ -15,7 +15,7 @@ def get_model():
     llm = ChatOpenAI(
         model=OPENAI_MODEL,
         temperature=1,
-        max_tokens=256,
+        max_tokens=1000,
         top_p=1,
         frequency_penalty=0,
         presence_penalty=0,
@@ -50,8 +50,8 @@ def run_model(user_input, messages, model):
                 ToolMessage(content=tool_output, tool_call_id=tool_call["id"])
             )  # noqa: E501
         ai_msg2 = model.invoke(messages)
-        return [ai_msg, ai_msg2]
-    return [ai_msg]
+        messages.append(ai_msg2)
+    return messages
 
 
 def initialize_assistant():
