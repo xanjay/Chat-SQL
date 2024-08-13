@@ -3,11 +3,11 @@
 An application to chat with your database.
 
 ## Features
-- Ask question in natural language and the underlying LLM model can answer aything from your database.
+- Ask question in natural language and the underlying LLM model can answer anything from your database.
 - It can write SQL query, connect to your database and run the query for you.
 - Display visualizations/plots
 
-![UI](/docs/img/chat_sql_ui_2.png)
+![UI](/docs/img/chat_sql_ui.jpg)
 ## Tools Used:
 - Langchain - LLM framework
 - OpenAI - LLM model
