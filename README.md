@@ -2,11 +2,12 @@
 
 An application to chat with your database.
 
-Ask question in natural language and the underlying LLM model can answer aything from your database.
+## Features
+- Ask question in natural language and the underlying LLM model can answer aything from your database.
+- It can write SQL query, connect to your database and run the query for you.
+- Display visualizations/plots
 
-It can write SQL query, connect to your database and run the query for you.
-
-![UI](/docs/img/app_ui.png)
+![UI](/docs/img/chat_sql_ui_2.png)
 ## Tools Used:
 - Langchain - LLM framework
 - OpenAI - LLM model
@@ -25,3 +26,6 @@ Populate `.env` file with credentials and run the app:
 ```bash
 streamlit run src/chat_sql/app.py
 ```
+
+## Contributing
+If you have any issue fixes or improvement changes. Fork this repo, make changes and submit pull request.

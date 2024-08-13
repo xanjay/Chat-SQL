@@ -1,13 +1,15 @@
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import ToolMessage
-from chat_sql.tools import run_sql, run_db_query
-from langchain_core.messages import HumanMessage, SystemMessage
+from chat_sql.tools import run_sql, run_db_query, plot_fig
+from langchain_core.messages import SystemMessage, AIMessage
 
 from dotenv import dotenv_values
 
 config = dotenv_values(".env")
 OPENAI_API_KEY = config["OPENAI_API_KEY"]
 OPENAI_MODEL = config["OPENAI_MODEL"]
+
+AVAILABLE_TOOLS = {"run_sql": run_sql, "plot_fig": plot_fig}
 
 
 def get_model():
@@ -23,7 +25,7 @@ def get_model():
         api_key=OPENAI_API_KEY,
     )
     # add function call
-    llm_with_tools = llm.bind_tools([run_sql])
+    llm_with_tools = llm.bind_tools(list(AVAILABLE_TOOLS.values()))
     return llm_with_tools
 
 
@@ -36,21 +38,41 @@ def get_db_schema():
     return schema
 
 
-def run_model(user_input, messages, model):
-    messages.append(HumanMessage(content=user_input))
+def make_tool_calls(ai_tool_calls):
+    plots = []
+    tool_messages = []
+
+    for tool_call in ai_tool_calls:
+        selected_tool = AVAILABLE_TOOLS[tool_call["name"].lower()]
+        tool_output = selected_tool.invoke(tool_call["args"])
+
+        # this tool returns artifacts along with message
+        if tool_call["name"] == "plot_fig":
+            tool_message = ToolMessage(
+                content=tool_output[0], tool_call_id=tool_call["id"]
+            )
+            plots.append(tool_output[-1])
+        else:
+            tool_message = ToolMessage(
+                content=tool_output, tool_call_id=tool_call["id"]
+            )
+        tool_messages.append(tool_message)
+    return tool_messages, plots
+
+
+def run_model(messages, model, artifacts=None):
     # call model
     ai_msg = model.invoke(messages)
+    if artifacts:
+        # recreate AI message with added plots
+        ai_msg = AIMessage(ai_msg.content, plots=artifacts)
+
     messages.append(ai_msg)
     # make tool calls (if any)
     if len(ai_tool_calls := ai_msg.tool_calls):
-        for tool_call in ai_tool_calls:
-            selected_tool = {"run_sql": run_sql}[tool_call["name"].lower()]
-            tool_output = selected_tool.invoke(tool_call["args"])
-            messages.append(
-                ToolMessage(content=tool_output, tool_call_id=tool_call["id"])
-            )  # noqa: E501
-        ai_msg2 = model.invoke(messages)
-        messages.append(ai_msg2)
+        tool_messages, plots = make_tool_calls(ai_tool_calls)
+        return run_model(messages + tool_messages, model, artifacts=plots)
+
     return messages
 
 

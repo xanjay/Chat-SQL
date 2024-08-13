@@ -16,6 +16,7 @@ pre-commit = "^3.8.0"
 coverage = "^7.6.1"
 langchain-community = "^0.2.11"
 psycopg2-binary = "^2.9.9"
+matplotlib = "^3.9.1.post1"
 
 
 [build-system]
